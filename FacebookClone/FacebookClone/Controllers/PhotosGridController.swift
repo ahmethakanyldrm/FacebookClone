@@ -35,7 +35,7 @@ class PhotosGridController: LBTAListController<PhotoGridCell, String>, UICollect
         super.viewDidLoad()
         collectionView.backgroundColor = .lightGray
         
-        self.items = ["ahmet","myImage","pera","ahmet","ahmet"]
+        self.items = ["ahmet","myImage","pera","ahmet","pera"]
     }
     
     let cellSpacing: CGFloat = 4
