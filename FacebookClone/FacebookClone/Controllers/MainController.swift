@@ -10,7 +10,7 @@ import LBTATools
 
 class PostCell: LBTAListCell<String> {
     
-    let imageView = UIImageView(backgroundColor: .blue)
+    let imageView = UIImageView(image: UIImage(named: "ahmet"))
     let nameLabel = UILabel(text: "Name Label")
     let dateLabel = UILabel(text: "Friday at 11.11 AM")
     let postTextLabel = UILabel(text: "Here is my post text")
@@ -84,7 +84,7 @@ class StoryPhotoCell: LBTAListCell<String> {
         gradientLayer.colors = [UIColor.clear.cgColor, UIColor.red.cgColor]
         gradientLayer.locations = [0.7,1.5]
         layer.cornerRadius = 10
-        clipsToBounds = true 
+        clipsToBounds = true
         layer.addSublayer(gradientLayer)
     }
     
@@ -124,12 +124,50 @@ class MainController: LBTAListHeaderController<PostCell, String,StoryHeader>, UI
         super.viewDidLoad()
         
         collectionView.backgroundColor = .init(white: 0.9, alpha: 1)
-        self.items = ["Hello", "World","1","2"]
+        self.items = ["ahmet", "myImage","pera"]
+        setupNavBar()
         
     }
     
     // MARK: - Functions
 
+    let fbLogoImageView = UIImageView(image: UIImage(named: "fb_logo"))
+    
+    let searchButton = UIButton(title: "Search", titleColor: .black)
+    
+    
+    fileprivate func setupNavBar() {
+       // navigationItem.title = "My Nav Bar"
+        let width = view.frame.width - 120 - 16 - 60
+        
+        let titleView = UIView(backgroundColor: .clear)
+        titleView.frame = .init(x: 0, y: 0, width: width, height: 50)
+        
+       
+        titleView.addSubview(fbLogoImageView)
+        
+        titleView.hstack(fbLogoImageView.withWidth(120),UIView(backgroundColor: .clear),searchButton.withWidth(60))
+        
+        
+        
+        navigationItem.titleView = titleView
+    }
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        let safeAreaTop = UIApplication.shared.windows.filter{$0.isKeyWindow}.first?.safeAreaInsets.top ?? 0
+        
+        let magicalSafeAreaTop : CGFloat = safeAreaTop + (navigationController?.navigationBar.frame.height ?? 0)
+        print(scrollView.contentOffset.y)
+        
+        let offset = scrollView.contentOffset.y + magicalSafeAreaTop
+        
+        let alpha : CGFloat = 1 - ((scrollView.contentOffset.y + magicalSafeAreaTop) / magicalSafeAreaTop)
+        [fbLogoImageView,searchButton].forEach{$0.alpha = alpha}
+        fbLogoImageView.alpha = alpha
+        
+        navigationController?.navigationBar.transform = .init(translationX: 0, y: min(0, -offset))
+    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         
@@ -143,7 +181,7 @@ class MainController: LBTAListHeaderController<PostCell, String,StoryHeader>, UI
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        return .init(width: view.frame.width, height: 250)
+        return .init(width: view.frame.width, height: 400)
     }
 }
 
@@ -164,7 +202,7 @@ struct MainPreview: PreviewProvider {
         }
         
         func makeUIViewController(context: Context) -> some UIViewController {
-            return MainController()
+            return UINavigationController(rootViewController: MainController())
         }
     }
     
